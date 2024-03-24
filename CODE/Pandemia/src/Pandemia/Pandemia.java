@@ -56,7 +56,7 @@ public class Pandemia extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == autorzyItem) {
-            // ... author info ...
+        	JOptionPane.showMessageDialog(this, "Autorzy:\nMaciej Chaciński \nMichał Kostera", "Autorzy", JOptionPane.INFORMATION_MESSAGE);
         } else if (e.getActionCommand().equals("New")) {
             // ... new file handling ...
         } else if (e.getActionCommand().equals("Save")) {
