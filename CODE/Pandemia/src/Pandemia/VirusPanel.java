@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.swing.*;
 
@@ -22,11 +24,12 @@ import javax.swing.*;
 class VirusPanel extends JPanel implements ActionListener {
 
     private final Pandemia pandemia;
-    public JButton pickVirusButton, colorVirusButton, colorHealthyButton, colorImmuneButton, colorDeadButton;
+    public JButton pickVirusButton, colorVirusButton, colorHealthyButton, colorImmuneButton, colorDeadButton, parametersButton;
+    public JLabel peopleLabel;
     private JLabel virusIdLabel;
     private Color virusColor; // Color for the virus
     private Color healthyCellColor, immuneCellColor, deadCellColor; // Universal color for healthy cells
-    
+    private JTextField peopleTextField;
     private JPanel forList;
     public JButton listButton;
     
@@ -44,13 +47,15 @@ class VirusPanel extends JPanel implements ActionListener {
         
         this.setLayout(new BorderLayout());
         forList = new JPanel();
-        forList.setLayout(new GridLayout(5, 2));
+        forList.setLayout(new GridLayout(6, 2));
         
         pickVirusButton = new JButton("Wybierz wirusa");
+        parametersButton = new JButton("Parametry");
         colorVirusButton = new JButton("Kolor wirusa: ");
         colorHealthyButton = new JButton("Kolor zdrowego: ");
         colorImmuneButton = new JButton("Kolor uodpornionego: ");
         colorDeadButton = new JButton("Kolor zmarłego: ");
+        
 
         virusIdLabel = new JLabel("-"); // Initial value for virus ID
 
@@ -59,11 +64,13 @@ class VirusPanel extends JPanel implements ActionListener {
         colorImmuneDisplayButton = new JButton(); // Button to display immune cell color (assuming universal)
         colorDeadDisplayButton = new JButton(); // Button to display dead cell color (assuming universal)
 
+        
         pickVirusButton.addActionListener(this);
         colorVirusButton.addActionListener(this);
         colorHealthyButton.addActionListener(this);
         colorImmuneButton.addActionListener(this);
         colorDeadButton.addActionListener(this);
+        parametersButton.addActionListener(this);
 
         forList.add(pickVirusButton);
         forList.add(virusIdLabel);
@@ -77,11 +84,18 @@ class VirusPanel extends JPanel implements ActionListener {
         forList.add(colorDeadDisplayButton);
         this.add(forList, BorderLayout.CENTER);
         
+        peopleLabel = new JLabel("Number of People:");
+        peopleTextField = new JTextField();
+        peopleTextField.addActionListener(this); // Add action listener to text field
+        forList.add(peopleLabel);
+        forList.add(peopleTextField);
+        
         listButton = new JButton("Generate a list of all viruses and their colors");
         listButton.addActionListener(this);
         this.add(listButton, BorderLayout.SOUTH);
+        this.add(parametersButton, BorderLayout.NORTH);
+        
     }
-
     @Override
     public void actionPerformed(ActionEvent e) 
     {
@@ -129,6 +143,35 @@ class VirusPanel extends JPanel implements ActionListener {
                 colorDeadDisplayButton.setBackground(selectedColor);
             }
         }
+        else if (e.getSource() == peopleTextField) 
+        {
+            try 
+            {
+                int numberOfPeople = Integer.parseInt(peopleTextField.getText());
+                pandemia.setNumberOfPeople(numberOfPeople); 
+              } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid number format. Please enter a valid integer.");
+              }
+        }
+        else if (e.getSource() == parametersButton) 
+        {
+            ParameterDialog dialog = new ParameterDialog((JFrame) SwingUtilities.getWindowAncestor(this));
+            dialog.setVisible(true);
+
+            if (dialog.isOkPressed()) {
+                int spreadability = dialog.getSpreadability();
+                int complexity = dialog.getComplexity();
+                int lethality = dialog.getLethality();
+
+                // Use the retrieved values as needed
+                // For example:
+                System.out.println("Spreadability: " + spreadability);
+                System.out.println("Genetic Complexity: " + complexity);
+                System.out.println("Lethality: " + lethality);
+            }
+        }
+        // Handle other actions in the future
+    }
 /*        else if (e.getSource() == listButton) 
         {
             // Create a new JFrame for the list window
@@ -164,4 +207,3 @@ class VirusPanel extends JPanel implements ActionListener {
           }
 */
     }
-}

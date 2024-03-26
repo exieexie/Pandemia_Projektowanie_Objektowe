@@ -19,7 +19,7 @@ public class Pandemia extends JFrame implements ActionListener{
     JPanel pandemiaPanel;
     JMenu SubMenu, Menu, RUN;
     JMenuBar menuBar;
-    
+    private int numberOfPeople; 
     private Locale currentLocale = new Locale("pl", "PL"); // Default to system locale (Polish in this case)
     
     
@@ -100,7 +100,7 @@ public class Pandemia extends JFrame implements ActionListener{
         // Removed the original colour buttons from here
     }
     
-    private void updateUILanguage() {
+    void updateUILanguage() {
     	  ResourceBundle messages = ResourceBundle.getBundle("Messages", currentLocale);
     	  setTitle(messages.getString("SymulacjaPandemii"));
 
@@ -123,6 +123,8 @@ public class Pandemia extends JFrame implements ActionListener{
     	  virusPanel.colorImmuneButton.setText(messages.getString("KolorUodpornionego") + ": ");
     	  virusPanel.colorDeadButton.setText(messages.getString("KolorZmarlego") + ": ");
     	  virusPanel.listButton.setText(messages.getString("Lista") + ": ");
+    	  virusPanel.peopleLabel.setText(messages.getString("NumberLabel") + ": ");
+    	  virusPanel.parametersButton.setText(messages.getString("Parametry") + ": ");
     	}
 
     
@@ -157,7 +159,14 @@ public class Pandemia extends JFrame implements ActionListener{
             virusPanel.actionPerformed(e);
         }
     }
-	
+    public void setNumberOfPeople(int numberOfPeople) 
+    {
+        this.numberOfPeople = numberOfPeople;
+      }
+    public int getNumberOfPeople() 
+    {
+        return numberOfPeople;
+    }
     
     
     
