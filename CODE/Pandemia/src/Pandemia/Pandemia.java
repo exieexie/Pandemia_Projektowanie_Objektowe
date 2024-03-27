@@ -40,45 +40,45 @@ public class Pandemia extends JFrame implements ActionListener{
         
         menuBar = new JMenuBar();
         
-        Menu = new JMenu("Menu");
-        Menu.setText(messages.getString("Menu"));
+        Menu = new JMenu(messages.getString("Menu"));
+        //Menu.setText(messages.getString("Menu"));
         Menu.addActionListener(this);
 
-        RUN = new JMenu("Start");
-        RUN.setText(messages.getString("Run"));
+        RUN = new JMenu((messages.getString("Run")));
+        //RUN.setText(messages.getString("Run"));
         RUN.addActionListener(this);
         
         
-        SubMenu = new JMenu("Jezyk");
-        SubMenu.setText(messages.getString("Jezyk"));
+        SubMenu = new JMenu(messages.getString("Jezyk"));
+        //SubMenu.setText(messages.getString("Jezyk"));
         SubMenu.addActionListener(this);
         
-        newItem = new JMenuItem("New");
-        newItem.setText(messages.getString("Nowy"));
+        newItem = new JMenuItem((messages.getString("Nowy")));
+        //newItem.setText(messages.getString("Nowy"));
         newItem.addActionListener(this);
         
-        saveItem = new JMenuItem("Save");
-        saveItem.setText(messages.getString("Zapisz"));
+        saveItem = new JMenuItem(messages.getString("Zapisz"));
+        //saveItem.setText(messages.getString("Zapisz"));
         saveItem.addActionListener(this);
         
-        openItem = new JMenuItem("Open");
-        openItem.setText(messages.getString("Otworz"));
+        openItem = new JMenuItem(messages.getString("Otworz"));
+        //openItem.setText(messages.getString("Otworz"));
         openItem.addActionListener(this);
         
-        jezykItem = new JMenuItem("Jezyk");
-        jezykItem.setText(messages.getString("Jezyk"));
+        jezykItem = new JMenuItem(messages.getString("Jezyk"));
+        //jezykItem.setText(messages.getString("Jezyk"));
         jezykItem.addActionListener(this);
         
-        polskiItem = new JMenuItem("Polski");
-        polskiItem.setText(messages.getString("Polski"));
+        polskiItem = new JMenuItem(messages.getString("Polski"));
+        //polskiItem.setText(messages.getString("Polski"));
         polskiItem.addActionListener(this);
         
-        angielskiItem = new JMenuItem("Angielski");
-        angielskiItem.setText(messages.getString("Angielski"));
+        angielskiItem = new JMenuItem(messages.getString("Angielski"));
+        //angielskiItem.setText(messages.getString("Angielski"));
         angielskiItem.addActionListener(this);
         
-        autorzyItem = new JMenuItem("Autorzy");
-        autorzyItem.setText(messages.getString("Autorzy"));
+        autorzyItem = new JMenuItem(messages.getString("Autorzy"));
+        //autorzyItem.setText(messages.getString("Autorzy"));
         autorzyItem.addActionListener(this);
 
         Menu.add(newItem);
@@ -125,6 +125,7 @@ public class Pandemia extends JFrame implements ActionListener{
     	  virusPanel.listButton.setText(messages.getString("Lista") + ": ");
     	  virusPanel.peopleLabel.setText(messages.getString("NumberLabel") + ": ");
     	  virusPanel.parametersButton.setText(messages.getString("Parametry") + ": ");
+    	  
     	}
 
     
@@ -148,10 +149,12 @@ public class Pandemia extends JFrame implements ActionListener{
         }
         else if (e.getSource() == polskiItem) {
             currentLocale = new Locale("pl", "PL"); // Set Polish locale
+            virusPanel.currentLocale = new Locale("pl", "PL");
             updateUILanguage();
         } 
         else if (e.getSource() == angielskiItem) {
             currentLocale = Locale.US; // Set English locale (US for consistency)
+            virusPanel.currentLocale =  Locale.US;
             updateUILanguage();
         } 
         else if (e.getSource() instanceof JComponent && ((JComponent) e.getSource()).getParent() == virusPanel) {

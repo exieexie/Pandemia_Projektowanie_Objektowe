@@ -33,6 +33,9 @@ class VirusPanel extends JPanel implements ActionListener {
     private JPanel forList;
     public JButton listButton;
     
+    
+    public Locale currentLocale = new Locale("pl", "PL");
+    
 //    private List<Virus> viruses = new ArrayList<>();
     
    // private Color virusColor; // Color for the virus, for now i think in the future the virus class will have it
@@ -156,6 +159,11 @@ class VirusPanel extends JPanel implements ActionListener {
         else if (e.getSource() == parametersButton) 
         {
             ParameterDialog dialog = new ParameterDialog((JFrame) SwingUtilities.getWindowAncestor(this));
+            ResourceBundle messages = ResourceBundle.getBundle("Messages", currentLocale);
+            dialog.spreadabilityLabel.setText(messages.getString("spred") + ": ");
+            dialog.complexityLabel.setText(messages.getString("complex") + ": ");
+            dialog.lethalityLabel.setText(messages.getString("leth") + ": ");
+            
             dialog.setVisible(true);
 
             if (dialog.isOkPressed()) {
