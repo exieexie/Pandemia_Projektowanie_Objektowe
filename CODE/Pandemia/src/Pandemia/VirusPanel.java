@@ -89,7 +89,7 @@ class VirusPanel extends JPanel implements ActionListener {
         
         peopleLabel = new JLabel("Number of People:");
         peopleTextField = new JTextField();
-        peopleTextField.addActionListener(this); // Add action listener to text field
+        peopleTextField.addActionListener(this); 
         forList.add(peopleLabel);
         forList.add(peopleTextField);
         
