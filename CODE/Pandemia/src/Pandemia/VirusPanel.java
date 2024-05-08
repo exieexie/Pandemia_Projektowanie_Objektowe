@@ -3,6 +3,7 @@ package Pandemia;
 import java.awt.BorderLayout;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,10 +29,11 @@ class VirusPanel extends JPanel implements ActionListener {
     public JLabel peopleLabel;
     private JLabel virusIdLabel;
     private Color virusColor; // Color for the virus
-    private Color healthyCellColor, immuneCellColor, deadCellColor; // Universal color for healthy cells
+    public static Color healthyCellColor, immuneCellColor, deadCellColor; // Universal color
     private JTextField peopleTextField;
     private JPanel forList;
-    public JButton listButton;
+    public JButton listButton, runSimulationButton;
+    public int numberOfPeople;
     
     
     public Locale currentLocale = new Locale("pl", "PL");
@@ -44,11 +46,101 @@ class VirusPanel extends JPanel implements ActionListener {
     private JButton colorHealthyDisplayButton; // Button to display healthy cell color
     private JButton colorImmuneDisplayButton; // Button to display immune cell color (assuming universal)
     private JButton colorDeadDisplayButton; // Button to display dead cell color (assuming universal)
+    
+    
+    public static ArrayList<Virus> virusesList = new ArrayList<>();
+    private Virus selectedVirus;
+    
+    
+    private class ParameterDialog extends JDialog 
+    {
+        private JTextField spreadabilityField, complexityField, lethalityField;
+        private JLabel spreadabilityLabel, complexityLabel, lethalityLabel;
+        private JButton okButton, cancelButton;
+        private boolean okPressed;
+
+        public ParameterDialog(JFrame parent) {
+            super(parent, "Specify Parameters", true);
+            setSize(300, 150);
+            setLocationRelativeTo(parent);
+
+            spreadabilityField = new JTextField(10);
+            complexityField = new JTextField(10);
+            lethalityField = new JTextField(10);
+
+            okButton = new JButton("OK");
+            cancelButton = new JButton("Cancel");
+
+            okButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    okPressed = true;
+                    dispose();
+                }
+            });
+
+            cancelButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    okPressed = false;
+                    dispose();
+                }
+            });
+
+            JPanel panel = new JPanel(new GridLayout(4, 2));
+
+            spreadabilityLabel = new JLabel("Spreadability:");
+            complexityLabel = new JLabel("Genetic Complexity:");
+            lethalityLabel = new JLabel("Lethality:");
+
+            panel.add(spreadabilityLabel);
+            panel.add(spreadabilityField);
+
+            panel.add(complexityLabel);
+            panel.add(complexityField);
+
+            panel.add(lethalityLabel);
+            panel.add(lethalityField);
+
+            panel.add(okButton);
+            panel.add(cancelButton);
+
+            add(panel);
+        }
+
+        public boolean isOkPressed() {
+            return okPressed;
+        }
+
+        public int getSpreadability() {
+            try {
+                return Integer.parseInt(spreadabilityField.getText());
+            } catch (NumberFormatException e) {
+                return 0;
+            }
+        }
+
+        public int getComplexity() {
+            try {
+                return Integer.parseInt(complexityField.getText());
+            } catch (NumberFormatException e) {
+                return 0;
+            }
+        }
+
+        public int getLethality() {
+            try {
+                return Integer.parseInt(lethalityField.getText());
+            } catch (NumberFormatException e) {
+                return 0;
+            }
+        }
+    }
+
 
     public VirusPanel(Pandemia pandemia) {
         this.pandemia = pandemia;
-        
         this.setLayout(new BorderLayout());
+        this.setPreferredSize(new Dimension(300, 600));
+        //this.setSize(200,600);
         forList = new JPanel();
         forList.setLayout(new GridLayout(6, 2));
         
@@ -93,23 +185,51 @@ class VirusPanel extends JPanel implements ActionListener {
         forList.add(peopleLabel);
         forList.add(peopleTextField);
         
+        JPanel buttonPanel = new JPanel(); // Panel to hold the buttons
+        buttonPanel.setLayout(new GridLayout(1, 2)); // Two buttons in a row
+
         listButton = new JButton("Generate a list of all viruses and their colors");
         listButton.addActionListener(this);
-        this.add(listButton, BorderLayout.SOUTH);
+        buttonPanel.add(listButton); // Add the list button to the button panel
+
+        runSimulationButton = new JButton("Run Simulation");
+        runSimulationButton.addActionListener(this);
+        buttonPanel.add(runSimulationButton); // Add the run simulation button to the button panel
+
+        // Add the button panel to the bottom of VirusPanel
+        this.add(buttonPanel, BorderLayout.SOUTH);
+
         this.add(parametersButton, BorderLayout.NORTH);
-        
     }
     @Override
     public void actionPerformed(ActionEvent e) 
     {
         if (e.getSource() == pickVirusButton) 
         {
-            // Implement logic to ask for virus ID (e.g., using JOptionPane)
+        	String virusId = JOptionPane.showInputDialog(this, "Enter Virus ID:");
+        	Virus existingVirus = findVirusById(virusId);
+            if (existingVirus != null) {
+                JOptionPane.showMessageDialog(this, "Virus with ID " + virusId + " already exists. Please enter a different ID.");
+            } else 
+            {
+                Virus newVirus = new Virus();
+                newVirus.setID(convertToInt(virusId));
+                virusesList.add(newVirus);
+                selectedVirus = newVirus;
+                virusIdLabel.setText(virusId);
+            }
+        	/*
+        	 // Ask user to input virus ID
             String virusId = JOptionPane.showInputDialog(this, "Enter Virus ID:");
-            virusIdLabel.setText(virusId); // Replace with actual logic
+            // Create a new Virus instance
+            Virus newVirus = new Virus();
+            // Parse the ID and set it to the newVirus
+            newVirus.setID(convertToInt(virusId));
+            // Add the newVirus to the virusesList
+            virusesList.add(newVirus);
+            virusIdLabel.setText(virusId); // Set the text of virusIdLabel
             
-//            viruses.add(new Virus(virusId, virusColor, healthyCellColor, immuneCellColor, deadCellColor));
-//            virusIdLabel.setText(virusId); // Replace with actual logic
+            */
         }
         else if (e.getSource() == colorVirusButton) 
         {
@@ -118,6 +238,7 @@ class VirusPanel extends JPanel implements ActionListener {
             {
                 virusColor = selectedColor;
                 colorVirusDisplayButton.setBackground(selectedColor);
+                updateVirusColor(selectedColor); // Update the color of the selected virus
             }
         } 
         else if (e.getSource() == colorHealthyButton) 
@@ -145,19 +266,78 @@ class VirusPanel extends JPanel implements ActionListener {
                 deadCellColor = selectedColor;
                 colorDeadDisplayButton.setBackground(selectedColor);
             }
+        } else if (e.getSource() == runSimulationButton || e.getSource() == peopleTextField) {
+            // Get the number of people
+            int numberOfPeople;
+            try {
+                numberOfPeople = Integer.parseInt(peopleTextField.getText());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid number format. Please enter a valid integer.");
+                return; // Stop further execution if the number is invalid
+            }
+
+            // Remove the VirusPanel from the Pandemia frame
+            pandemia.remove(this);
+
+            // Create a new CFrame with the population size
+            CFrame cFrame = new CFrame(numberOfPeople);
+
+            // Add the CFrame to the Pandemia frame
+            pandemia.add(cFrame);
+
+            // Refresh the Pandemia frame
+            pandemia.revalidate();
+            pandemia.repaint();
         }
-        else if (e.getSource() == peopleTextField) 
+        
+        
+        
+        
+/*        else if (e.getSource() == peopleTextField) 
         {
             try 
             {
-                int numberOfPeople = Integer.parseInt(peopleTextField.getText());
+                numberOfPeople = Integer.parseInt(peopleTextField.getText());
                 pandemia.setNumberOfPeople(numberOfPeople); 
               } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Invalid number format. Please enter a valid integer.");
               }
-        }
+        }     */
+        
+        
+        
+        
         else if (e.getSource() == parametersButton) 
         {
+        	 if (selectedVirus != null) 
+        	 {
+                 ParameterDialog dialog = new ParameterDialog((JFrame) SwingUtilities.getWindowAncestor(this));
+                 dialog.setVisible(true);
+
+                 if (dialog.isOkPressed()) 
+                 {
+                     int spreadability = dialog.getSpreadability();
+                     int complexity = dialog.getComplexity();
+                     int lethality = dialog.getLethality();
+
+                     // Set parameters for the selected virus
+                     selectedVirus.setSpreadability(spreadability);
+                     selectedVirus.setComplexity(complexity);
+                     selectedVirus.setLethality(lethality);
+
+                     // For example, you can print the parameters
+                     System.out.println("Spreadability: " + selectedVirus.spreadability + "of virus by ID:" + selectedVirus.ID);
+                     System.out.println("Genetic Complexity: " + selectedVirus.complexity+ "of virus by ID:" + selectedVirus.ID);
+                     System.out.println("Lethality: " + selectedVirus.lethality+ "of virus by ID:" + selectedVirus.ID);
+                 }
+             } 
+        	 else 
+        	 {
+                 JOptionPane.showMessageDialog(this, "Please select a virus first.");
+             }
+        	
+        	
+        	/*
             ParameterDialog dialog = new ParameterDialog((JFrame) SwingUtilities.getWindowAncestor(this));
             ResourceBundle messages = ResourceBundle.getBundle("Messages", currentLocale);
             dialog.spreadabilityLabel.setText(messages.getString("spred") + ": ");
@@ -177,7 +357,88 @@ class VirusPanel extends JPanel implements ActionListener {
                 System.out.println("Genetic Complexity: " + complexity);
                 System.out.println("Lethality: " + lethality);
             }
+            
+            */
         }
+        else if (e.getSource() == listButton) 
+        {
+            // Create a new JFrame for the list window
+            JFrame listWindow = new JFrame("List of Viruses");
+            listWindow.setSize(600, 400); // Adjust size as needed
+
+            // Create a JPanel to hold the list elements
+            JPanel listPanel = new JPanel();
+            listPanel.setLayout(new GridLayout(0, 5)); // Dynamic number of rows based on viruses, 5 columns
+
+            // Header labels for Virus ID, Spreadability, Complexity, Lethality, and Infected Color
+            JLabel virusIdLabel = new JLabel("Virus ID");
+            JLabel spreadabilityLabel = new JLabel("Spreadability");
+            JLabel complexityLabel = new JLabel("Complexity");
+            JLabel lethalityLabel = new JLabel("Lethality");
+            JLabel infectedColorLabel = new JLabel("Infected Color");
+            listPanel.add(virusIdLabel);
+            listPanel.add(spreadabilityLabel);
+            listPanel.add(complexityLabel);
+            listPanel.add(lethalityLabel);
+            listPanel.add(infectedColorLabel);
+
+            // Iterate through viruses and add labels for each
+            for (Virus virus : virusesList) {
+                JLabel idLabel = new JLabel(Integer.toString(virus.getID()));
+                JLabel spreadabilityValueLabel = new JLabel(Integer.toString((int)virus.getSpreadability()));
+                JLabel complexityValueLabel = new JLabel(Integer.toString((int)virus.getComplexity()));
+                JLabel lethalityValueLabel = new JLabel(Integer.toString((int)virus.getLethality()));
+                JButton infectedColorButton = new JButton();
+                infectedColorButton.setBackground(virus.infectedColor);
+                infectedColorButton.setEnabled(false); // Prevent accidental color changes
+
+                listPanel.add(idLabel);
+                listPanel.add(spreadabilityValueLabel);
+                listPanel.add(complexityValueLabel);
+                listPanel.add(lethalityValueLabel);
+                listPanel.add(infectedColorButton);
+            }
+
+            // Add the list panel to the list window
+            listWindow.add(listPanel, BorderLayout.CENTER);
+
+            // Make the window visible
+            listWindow.setVisible(true);
+        }
+        
+        
+        
+        
+/*        else if (e.getSource() == runSimulationButton) 
+        {
+            // Get the number of people
+            try 
+            {
+                numberOfPeople = Integer.parseInt(peopleTextField.getText());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid number format. Please enter a valid integer.");
+                return; // Stop further execution if the number is invalid
+            }
+            
+            // Initialize CFrame with the population size
+            CFrame frame = new CFrame(numberOfPeople);
+
+            // Remove all components from pandemiaPanel
+            pandemia.pandemiaPanel.removeAll();
+
+            // Add the CFrame to pandemiaPanel
+            pandemia.pandemiaPanel.add(frame);
+
+            // Validate and repaint pandemiaPanel
+            pandemia.pandemiaPanel.revalidate();
+            pandemia.pandemiaPanel.repaint();
+        } */
+        
+        
+        
+        
+        
+
         // Handle other actions in the future
     }
 /*        else if (e.getSource() == listButton) 
@@ -214,4 +475,34 @@ class VirusPanel extends JPanel implements ActionListener {
             listWindow.setVisible(true);
           }
 */
+    public static int convertToInt(String str) 
+    {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            // Handle the case when the string is not a valid integer
+            System.err.println("Error: Input string is not a valid integer.");
+            return 0; // or throw an exception, return a default value, etc.
+        }
+    }
+    public static Virus findVirusById(String id) 
+    {
+        for (Virus virus : virusesList) {
+            if (Integer.toString(virus.getID()).equals(id)) {
+                return virus;
+            }
+        }
+        return null; // Not found
+    }
+    private void updateVirusColor(Color selectedColor) {
+        if (selectedVirus != null) {
+            selectedVirus.infectedColor = selectedColor;
+            colorVirusDisplayButton.setBackground(selectedColor);
+        }
+    }
+    
+    public static ArrayList<Virus> getVirusesList() {
+        return virusesList;
+    }
+    
     }

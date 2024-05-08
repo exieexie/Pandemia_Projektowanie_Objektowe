@@ -2,10 +2,13 @@ package Pandemia;
 
 import java.awt.BorderLayout;
 
+
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -14,19 +17,25 @@ import java.util.ResourceBundle;
 
 public class Pandemia extends JFrame implements ActionListener{
 
-    JMenuItem newItem, saveItem, openItem, jezykItem, autorzyItem, polskiItem, angielskiItem;
+    JMenuItem newItem, saveItem, openItem, jezykItem, autorzyItem, polskiItem, angielskiItem, runItem;
     VirusPanel virusPanel;
     JPanel pandemiaPanel;
-    JMenu SubMenu, Menu, RUN;
+    JMenu SubMenu, Menu;
     JMenuBar menuBar;
     private int numberOfPeople; 
-    private Locale currentLocale = new Locale("pl", "PL"); // Default to system locale (Polish in this case)
+    private Locale currentLocale = new Locale("pl", "PL");
+    
+    ArrayList<Virus> viruses = new ArrayList<Virus>();
+    
+    private CFrame simulationPanel;
     
     
-    public Pandemia() {
+    public Pandemia() 
+    {
         setTitle("Symulacja pandemii");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700, 500);
+        this.setLayout(new BorderLayout());
+        setSize(1000, 600);
 
         setLayout(new BorderLayout());
 
@@ -44,9 +53,11 @@ public class Pandemia extends JFrame implements ActionListener{
         //Menu.setText(messages.getString("Menu"));
         Menu.addActionListener(this);
 
-        RUN = new JMenu((messages.getString("Run")));
+       // RUN = new JMenu((messages.getString("Run")));
         //RUN.setText(messages.getString("Run"));
-        RUN.addActionListener(this);
+       // RUN.addActionListener(this);
+        
+
         
         
         SubMenu = new JMenu(messages.getString("Jezyk"));
@@ -81,6 +92,10 @@ public class Pandemia extends JFrame implements ActionListener{
         //autorzyItem.setText(messages.getString("Autorzy"));
         autorzyItem.addActionListener(this);
 
+        //runItem = new JMenuItem(messages.getString("Run")); // Changed this to JMenuItem
+        //runItem.addActionListener(this);
+        
+        
         Menu.add(newItem);
         Menu.add(saveItem);
         Menu.add(openItem);
@@ -90,7 +105,8 @@ public class Pandemia extends JFrame implements ActionListener{
         Menu.addSeparator();
         Menu.add(autorzyItem);
         menuBar.add(Menu);
-        menuBar.add(RUN);
+        //menuBar.add(RUN);
+        //Menu.add(runItem); // Added runItem to the menu bar
         setJMenuBar(menuBar);
 
         virusPanel = new VirusPanel(this);
@@ -106,7 +122,8 @@ public class Pandemia extends JFrame implements ActionListener{
 
     	  // Update menu items
     	  Menu.setText(messages.getString("Menu"));
-    	  RUN.setText(messages.getString("Run"));
+    	  //RUN.setText(messages.getString("Run"));
+    	  //runItem.setText(messages.getString("Run")); // Update runItem text
     	  SubMenu.setText(messages.getString("Jezyk"));
     	  jezykItem.setText(messages.getString("Jezyk"));
     	  newItem.setText(messages.getString("Nowy"));
@@ -143,10 +160,23 @@ public class Pandemia extends JFrame implements ActionListener{
         } else if (e.getActionCommand().equals("Open")) {
             // ... open file handling ...
         }
-        else if(e.getSource() == RUN)
-        {
-        	//implementation of running the simulation - hide right panel OR make it into a real-time list
-        }
+/*        else if (e.getSource() == runItem) { // Check if the source is runItem
+            // Get the number of people from the virusPanel
+            int numberOfPeople = virusPanel.numberOfPeople;
+            
+            // Initialize CFrame with the population size
+            CFrame frame = new CFrame(numberOfPeople);
+            
+            // Remove all components from pandemiaPanel
+            pandemiaPanel.removeAll();
+            
+            // Add the CFrame to pandemiaPanel
+            pandemiaPanel.add(frame);
+            
+            // Validate and repaint pandemiaPanel
+            pandemiaPanel.revalidate();
+            pandemiaPanel.repaint();
+        } */
         else if (e.getSource() == polskiItem) {
             currentLocale = new Locale("pl", "PL"); // Set Polish locale
             virusPanel.currentLocale = new Locale("pl", "PL");

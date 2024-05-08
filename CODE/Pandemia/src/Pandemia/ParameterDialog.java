@@ -1,3 +1,9 @@
+
+/*
+
+moved to VirusPanel as a subclass
+hopefully it will be a good idea and simplifies a lot of shit, like setting parameters
+
 package Pandemia;
 
 import javax.swing.JDialog;
@@ -109,3 +115,6 @@ class ParameterDialog extends JDialog
     	}
     }
 }
+
+
+*/
