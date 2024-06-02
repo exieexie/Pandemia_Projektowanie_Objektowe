@@ -29,7 +29,7 @@ class VirusPanel extends JPanel implements ActionListener {
     public JLabel peopleLabel;
     private JLabel virusIdLabel;
     private Color virusColor; // Color for the virus
-    public static Color healthyCellColor, immuneCellColor, deadCellColor; // Universal color
+    public static Color healthyCellColor = Color.GREEN, immuneCellColor = Color.CYAN, deadCellColor = Color.BLACK; // Universal color
     private JTextField peopleTextField;
     private JPanel forList;
     public JButton listButton, runSimulationButton;
@@ -49,6 +49,7 @@ class VirusPanel extends JPanel implements ActionListener {
     
     
     public static ArrayList<Virus> virusesList = new ArrayList<>();
+    public static ArrayList<Person> peopleList = new ArrayList<>();
     private Virus selectedVirus;
     
     
@@ -155,10 +156,15 @@ class VirusPanel extends JPanel implements ActionListener {
         virusIdLabel = new JLabel("-"); // Initial value for virus ID
 
         colorVirusDisplayButton = new JButton(); // Button to display virus color
+        
         colorHealthyDisplayButton = new JButton(); // Button to display healthy cell color
+        colorHealthyDisplayButton.setBackground(healthyCellColor);
+        
         colorImmuneDisplayButton = new JButton(); // Button to display immune cell color (assuming universal)
+        colorImmuneDisplayButton.setBackground(immuneCellColor);
+        
         colorDeadDisplayButton = new JButton(); // Button to display dead cell color (assuming universal)
-
+        colorDeadDisplayButton.setBackground(deadCellColor);
         
         pickVirusButton.addActionListener(this);
         colorVirusButton.addActionListener(this);
@@ -233,7 +239,7 @@ class VirusPanel extends JPanel implements ActionListener {
         }
         else if (e.getSource() == colorVirusButton) 
         {
-            Color selectedColor = JColorChooser.showDialog(this, "Pick Virus Color", virusColor); // Use existing virusColor if available
+            Color selectedColor = JColorChooser.showDialog(this, "Pick Virus Color", Color.RED); // Use existing virusColor if available
             if (selectedColor != null) 
             {
                 virusColor = selectedColor;
@@ -243,7 +249,7 @@ class VirusPanel extends JPanel implements ActionListener {
         } 
         else if (e.getSource() == colorHealthyButton) 
         {
-            Color selectedColor = JColorChooser.showDialog(this, "Pick Healthy Cell Color", getBackground()); // Use existing background color
+            Color selectedColor = JColorChooser.showDialog(this, "Pick Healthy Cell Color", healthyCellColor); // Use existing background color
             if (selectedColor != null) 
             {
                 healthyCellColor = selectedColor;
@@ -252,7 +258,7 @@ class VirusPanel extends JPanel implements ActionListener {
         } 
         else if (e.getSource() == colorImmuneButton) 
         {
-        	Color selectedColor = JColorChooser.showDialog(this, "Pick Immune Cell Color", getBackground()); // Use existing background color
+        	Color selectedColor = JColorChooser.showDialog(this, "Pick Immune Cell Color", immuneCellColor); // Use existing background color
             if (selectedColor != null) 
             {
                 immuneCellColor = selectedColor;
@@ -260,7 +266,7 @@ class VirusPanel extends JPanel implements ActionListener {
             }
         } else if (e.getSource() == colorDeadButton) 
         {
-        	Color selectedColor = JColorChooser.showDialog(this, "Pick Dead Cell Color", getBackground()); // Use existing background color
+        	Color selectedColor = JColorChooser.showDialog(this, "Pick Dead Cell Color", deadCellColor); // Use existing background color
             if (selectedColor != null) 
             {
                 deadCellColor = selectedColor;
@@ -285,6 +291,10 @@ class VirusPanel extends JPanel implements ActionListener {
             // Add the CFrame to the Pandemia frame
             pandemia.add(cFrame);
 
+            for (Virus virus : virusesList) {
+            	virus.scheduleDoctorCreation();
+            }
+            
             // Refresh the Pandemia frame
             pandemia.revalidate();
             pandemia.repaint();
@@ -503,6 +513,11 @@ class VirusPanel extends JPanel implements ActionListener {
     
     public static ArrayList<Virus> getVirusesList() {
         return virusesList;
+    }
+    public static void addDoctorsForVirus(int virusId) {
+        for (int i = 0; i < 10; i++) {
+            peopleList.add(new Doctor(virusId));
+        }
     }
     
     }

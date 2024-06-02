@@ -1,6 +1,8 @@
 package Pandemia;
 
 import java.awt.Color;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Virus 
 {
@@ -9,6 +11,7 @@ public class Virus
 	public double spreadability;
 	public double lethality;
 	public double complexity;
+	public boolean doctorsAdded;
 	
 	public Virus()
 	{
@@ -16,6 +19,9 @@ public class Virus
 		setSpreadability(0);
 		setLethality(0);
 		setComplexity(0);
+		
+        doctorsAdded = false; // Initialize to false
+
 	}
 	
 	public int getID()
@@ -59,8 +65,8 @@ public class Virus
 	
 	//attempting to implement mutations 
 	//wish me luck
-	public void mutate(double mutationChance) {
-        if (Math.random() < mutationChance) {
+	public Virus mutate() 
+	{
             // Mutation attempts
             //int attempts = 0;
 
@@ -70,27 +76,35 @@ public class Virus
 
                 // Mutate ID
                 int newId = ID + mutationDirection * mutationAmount;
-                Virus newVirus = VirusPanel.findVirusById(Integer.toString(newId)); // Find virus by ID
-                if ((newVirus == null)) 
+                Virus checkVirus = VirusPanel.findVirusById(Integer.toString(newId)); // Find virus by ID
+                if ((checkVirus == null)) 
                 {
-                    ID = newId;
+                	Virus newVirus = new Virus();
+                    newVirus.ID = newId;
                  // Randomize color
-                	infectedColor = new Color((int) (Math.random() * 256), (int) (Math.random() * 256), (int) (Math.random() * 256));
+                    newVirus.infectedColor = new Color((int) (Math.random() * 256), (int) (Math.random() * 256), (int) (Math.random() * 256));
                     //infectedColor = Color.red;
                 	// Adjust parameters
                     double spreadChange = (Math.random() - 0.5) * 0.5 * spreadability; // Up to 50% change in spreadability
-                    spreadability += spreadChange;
+                    newVirus.spreadability += spreadChange;
                     double lethalityChange = (Math.random() - 0.5) * 0.5 * lethality; // Up to 50% change in lethality
-                    lethality += lethalityChange;
+                    newVirus.lethality += lethalityChange;
                     double complexityChange = (Math.random() - 0.5) * 0.5 * complexity; // Up to 50% change in complexity
-                    complexity += complexityChange;
+                    newVirus.complexity += complexityChange;
+                    
+                    VirusPanel.virusesList.add(newVirus);
+                    newVirus.scheduleDoctorCreation();
+                    
+                    return newVirus;
+                }
+                return this;
                     // Adjust other parameters similarly
                 //} 
                 //else 
                 //{
                 //    attempts++;
                 //}
-            }
+
 
             /*
             // If ID mutation was successful, randomize color and adjust parameters
@@ -109,7 +123,15 @@ public class Virus
                 // Adjust other parameters similarly
             }
             */
-        }
     }
+	public void scheduleDoctorCreation() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                VirusPanel.addDoctorsForVirus(ID);
+            }
+        }, (long)(60000 *complexity)); // 60 seconds if complexity is 100
+	}
 	
 }

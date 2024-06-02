@@ -81,28 +81,50 @@ public class Person {
 	        // Infection only happens if one person is infected and the other has never been infected before
 	        if (this.status == 1 && p2.status == 0) { // Case person 1 is infected and person 1 is not
 	            if (this.infectedBy != null) { // Check if infectedBy is not null
-	                if (Math.random() < this.infectedBy.getSpreadability()/100) {
+	                if (Math.random() < this.infectedBy.getSpreadability()/100)
+	                {
+	                	Virus current = this.infectedBy;
+	                	if (Math.random() < this.infectedBy.getComplexity()/100 )
+	                	{
+	                		current = this.infectedBy.mutate();
+	                		
+	                	}
 	                    //this.infectedBy.mutate(this.infectedBy.getComplexity() / 1);
 	                    p2.status = 1;
-	                    p2.infectedBy = this.infectedBy; // Infect person with the same virus
+	                    p2.infectedBy = current; // Infect person with the same virus
 	                    numInfected++; // Add to total count of infected people
 	                }
 	            }
 	        } else if (this.status == 0 && p2.status == 1) { // Case person 2 is infected and person 1 is not
 	            if (p2.infectedBy != null) { // Check if infectedBy is not null
-	                if (Math.random() < p2.infectedBy.getSpreadability()/100) {
+	                if (Math.random() < p2.infectedBy.getSpreadability()/100) 
+	                {
+	                	Virus current = this.infectedBy;
+	                	if (Math.random() < p2.infectedBy.getComplexity()/100 )
+	                	{
+	                		current = p2.infectedBy.mutate();
+	                		
+	                	}
 	                    //p2.infectedBy.mutate(p2.infectedBy.getComplexity() / 1);
 	                    this.status = 1;
-	                    this.infectedBy = p2.infectedBy; // Infect person with the same virus
+	                    this.infectedBy = current; // Infect person with the same virus
 	                    numInfected++; // Add to total count of infected people
 	                }
 	            }
 	        } else if (this.status == 2 && p2.status == 1) { // Case person 1 is cured and person 2 is infected
 	            if (this.infectedBy != null && !this.recoveredFrom.contains(p2.infectedBy.getID())) { // Check if infectedBy is not null
 	                if (Math.random() < this.infectedBy.getSpreadability()/100) {
+	                	
+	                	Virus current = this.infectedBy;
 	                	//p2.infectedBy.mutate(p2.infectedBy.getComplexity() / 1);
+	                	if (Math.random() < p2.infectedBy.getComplexity()/100 )
+	                	{
+	                		current = p2.infectedBy.mutate();
+	                		
+	                	}
+	                	
 	                    this.status = 1;
-	                    this.infectedBy = p2.infectedBy; // Infect person with the same virus
+	                    this.infectedBy = current; // Infect person with the same virus
 	                    numInfected++; // Add to total count of infected people
 	                }
 	            }
@@ -110,12 +132,20 @@ public class Person {
 	            if (p2.infectedBy != null && !p2.recoveredFrom.contains(this.infectedBy.getID())) { // Check if infectedBy is not null
 	                if (Math.random() < p2.infectedBy.getSpreadability()/100) {
 	                	 //this.infectedBy.mutate(this.infectedBy.getComplexity() / 1);
+	                	
+	                	Virus current = this.infectedBy;
+	                	if (Math.random() < this.infectedBy.getComplexity()/100 )
+	                	{
+	                		current = this.infectedBy.mutate();
+	                		
+	                	}
+	                	
 		                    p2.status = 1;
-		                    p2.infectedBy = this.infectedBy; // Infect person with the same virus
+		                    p2.infectedBy = current; // Infect person with the same virus
 		                    numInfected++; // Add to total count of infected people
 	                }
 	            }
-	        } 
+	        }    
 	    }
 	}
 
@@ -149,7 +179,7 @@ public class Person {
 		
 		//If person is infected, they eventually recover so that they don't 
 		//infect people forever. 
-		if(status ==1) 
+		if(infectedBy != null) 
 		{
 			//recoveryTime update
 			recoveryTime-=16;

@@ -11,15 +11,13 @@ import javax.swing.Timer;
 
 public class CFrame extends JPanel implements ActionListener {
 
-    // Store multiple Person objects
-    private ArrayList<Person> people = new ArrayList<Person>(); // The moving Person objects (circles)
+    private ArrayList<Person> people = new ArrayList<Person>(); 
 
     private int time = 0; // Track time as the simulation runs
     private int population;
 
     public Color healthyColor, recoveredColor, deadColor;
     
-    // Constructor
     public CFrame(int population) {
     	
     	 setPreferredSize(new Dimension(1000, 600));
@@ -29,7 +27,7 @@ public class CFrame extends JPanel implements ActionListener {
         for (int i = 0; i < population; i++) {
             // Instantiate an Person object and add it to the ArrayList
             // This is the part that actually CREATES objects we can use
-            people.add(new Person());
+            VirusPanel.peopleList.add(new Person());
         }
 
         // Timer for animation
@@ -44,15 +42,15 @@ public class CFrame extends JPanel implements ActionListener {
         time += 16; // Increment time by 16ms
 
         // Paint the Person objects
-        for (Person p : people) {
+        for (Person p : VirusPanel.peopleList) {
             p.paint(g); // Call the paint method of each Person object
         }
 
         // Check for collision by generating unique pairs of people
-        for (int i = 0; i < people.size(); i++) {
-            for (int j = i + 1; j < people.size(); j++) {
+        for (int i = 0; i < VirusPanel.peopleList.size(); i++) {
+            for (int j = i + 1; j < VirusPanel.peopleList.size(); j++) {
                 // For each unique pair invoke the collision detection code
-                people.get(i).collision(people.get(j));
+                VirusPanel.peopleList.get(i).collision(VirusPanel.peopleList.get(j));
             }
         }
     }
@@ -61,6 +59,15 @@ public class CFrame extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint(); // Redraw the simulation
+        
+        if (time >= 60000) {
+            for (Virus virus : VirusPanel.getVirusesList()) {
+                if (!virus.doctorsAdded) {
+                    VirusPanel.addDoctorsForVirus(virus.getID());
+                    virus.doctorsAdded = true;
+                }
+            }
+        }
     }
 
     // Getters and setters
