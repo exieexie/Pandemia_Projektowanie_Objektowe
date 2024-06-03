@@ -25,18 +25,23 @@ public class Doctor extends Person {
         Rectangle per1 = new Rectangle(p2.x, p2.y, 10, 10);
         Rectangle per2 = new Rectangle(this.x, this.y, 10, 10);
 
-        if (per1.intersects(per2)) {
-            if (p2.status == 1 && p2.infectedBy.getID() == virusId) { // If the person is infected with the virus
+        if (per1.intersects(per2)) 
+        {
+            if (p2.status == 1 && p2.infectedBy.getID() == virusId) 
+            { // If the person is infected with the virus
                 p2.status = 2; // Make them immune
                 p2.recoveredFrom.add(virusId);
                 p2.infectedBy = null;
                 Person.numInfected--; // Decrease infected count
             }
-            if (p2.status == 0) { // If the person is infected with the virus
+            else if (p2.status == 0) 
+            {
                 p2.status = 2; // Make them immune
                 p2.recoveredFrom.add(virusId);
-                p2.infectedBy = null;
-                Person.numInfected--; // Decrease infected count
+            }
+            else if(p2.status == 1 && p2.infectedBy.getID() != virusId) 
+            { // If the person is infected with the virus
+                p2.recoveredFrom.add(virusId);
             }
         }
     }

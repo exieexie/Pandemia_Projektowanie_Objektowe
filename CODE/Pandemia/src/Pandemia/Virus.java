@@ -1,6 +1,7 @@
 package Pandemia;
 
 import java.awt.Color;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -82,22 +83,36 @@ public class Virus
                 	Virus newVirus = new Virus();
                     newVirus.ID = newId;
                  // Randomize color
-                    newVirus.infectedColor = new Color((int) (Math.random() * 256), (int) (Math.random() * 256), (int) (Math.random() * 256));
+                    Random rand = new Random();
+                    
+                    
+                    newVirus.infectedColor = new Color(rand.nextInt(256), rand.nextInt(256),rand.nextInt(256));
+                    //newVirus.infectedColor = Color.MAGENTA;
+                    
                     //infectedColor = Color.red;
                 	// Adjust parameters
                     double spreadChange = (Math.random() - 0.5) * 0.5 * spreadability; // Up to 50% change in spreadability
+                    newVirus.spreadability += this.spreadability;
                     newVirus.spreadability += spreadChange;
+                    newVirus.spreadability += 1;
                     double lethalityChange = (Math.random() - 0.5) * 0.5 * lethality; // Up to 50% change in lethality
+                    newVirus.lethality += this.lethality;
                     newVirus.lethality += lethalityChange;
+                    newVirus.lethality += 1;
                     double complexityChange = (Math.random() - 0.5) * 0.5 * complexity; // Up to 50% change in complexity
+                    newVirus.complexity += this.complexity;
                     newVirus.complexity += complexityChange;
+                    newVirus.complexity += 1;
                     
                     VirusPanel.virusesList.add(newVirus);
                     newVirus.scheduleDoctorCreation();
                     
                     return newVirus;
                 }
+                else 
+                {
                 return this;
+                }
                     // Adjust other parameters similarly
                 //} 
                 //else 
@@ -126,12 +141,13 @@ public class Virus
     }
 	public void scheduleDoctorCreation() {
         Timer timer = new Timer();
+        System.out.println("doctors scheduled for virus :" + this.ID);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 VirusPanel.addDoctorsForVirus(ID);
             }
-        }, (long)(60000 *complexity)); // 60 seconds if complexity is 100
+        }, (long)(600 *complexity)); // 60 seconds if complexity is 100
 	}
 	
 }

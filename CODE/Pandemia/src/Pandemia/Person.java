@@ -25,7 +25,7 @@ public class Person {
 	 ArrayList<Integer> recoveredFrom = new ArrayList<>();
 	//recoveryTime
 	int recoveryTime;
-	
+
 	static int numInfected = 0;
 	
 	//Constructor for the Person objects
@@ -50,6 +50,7 @@ public class Person {
                     status = 1; // Infected
                     numInfected++;
                     infectedBy = randomVirus; // Set infectedBy to the random virus
+                    recoveryTime =  random.nextInt((int) (2000+ 600*infectedBy.complexity)); // 
                 }
             }
         }
@@ -67,7 +68,7 @@ public class Person {
 		
 		//randomize how long it takes for the Person objects to recover!
 		//this one is between 5-7 seconds (numbers are in milliseconds)
-		recoveryTime = (int)(Math.random()*(7000-5000+1)+5000);
+
 		
 	}
 	
@@ -78,6 +79,7 @@ public class Person {
 
 	    // Collision check
 	    if (per1.intersects(per2)) {
+	    	Random random = new Random();
 	        // Infection only happens if one person is infected and the other has never been infected before
 	        if (this.status == 1 && p2.status == 0) { // Case person 1 is infected and person 1 is not
 	            if (this.infectedBy != null) { // Check if infectedBy is not null
@@ -91,8 +93,23 @@ public class Person {
 	                	}
 	                    //this.infectedBy.mutate(this.infectedBy.getComplexity() / 1);
 	                    p2.status = 1;
+	                    if (current != null)
+	                    {
 	                    p2.infectedBy = current; // Infect person with the same virus
+	                    p2. recoveryTime =  random.nextInt((int) (5000+ 600*current.complexity)); // 
 	                    numInfected++; // Add to total count of infected people
+	                    }
+	                    else if (this.infectedBy != null)
+	                    {
+	                    	p2.infectedBy = this.infectedBy;
+	                    	p2.recoveryTime =  random.nextInt((int) (5000+ 600*this.infectedBy.complexity));
+	                    	numInfected++; // Add to total count of infected people
+	                    	
+	                    }
+	                    else
+	                    {
+	                    	p2.status = 0;
+	                    }
 	                }
 	            }
 	        } else if (this.status == 0 && p2.status == 1) { // Case person 2 is infected and person 1 is not
@@ -107,13 +124,30 @@ public class Person {
 	                	}
 	                    //p2.infectedBy.mutate(p2.infectedBy.getComplexity() / 1);
 	                    this.status = 1;
+	                    if (current != null)
+	                    {
+	                    	
 	                    this.infectedBy = current; // Infect person with the same virus
+	                    this. recoveryTime =  random.nextInt((int) (5000+ 600*current.complexity)); // 
 	                    numInfected++; // Add to total count of infected people
+	                    }
+	                    else if(p2.infectedBy != null)
+	                    {
+	                    	this.infectedBy = p2.infectedBy;
+	                    	this.recoveryTime = random.nextInt((int)(5000+ 600*p2.infectedBy.complexity) );
+	                    	numInfected++; // Add to total count of infected people
+	                    	
+	                    }
+	                    else
+	                    {
+	                    	this.status = 0;
+	                    }
 	                }
 	            }
 	        } else if (this.status == 2 && p2.status == 1) { // Case person 1 is cured and person 2 is infected
 	            if (this.infectedBy != null && !this.recoveredFrom.contains(p2.infectedBy.getID())) { // Check if infectedBy is not null
-	                if (Math.random() < this.infectedBy.getSpreadability()/100) {
+	                if (Math.random() < this.infectedBy.getSpreadability()/100) 
+	                {
 	                	
 	                	Virus current = this.infectedBy;
 	                	//p2.infectedBy.mutate(p2.infectedBy.getComplexity() / 1);
@@ -124,8 +158,22 @@ public class Person {
 	                	}
 	                	
 	                    this.status = 1;
+	                    if (current != null)
+	                    {
 	                    this.infectedBy = current; // Infect person with the same virus
+	                    this. recoveryTime =  random.nextInt((int) (5000+ 600*current.complexity)); // 
 	                    numInfected++; // Add to total count of infected people
+	                    }
+	                    else if(p2.infectedBy != null)
+	                    {
+	                    	this.infectedBy = p2.infectedBy;
+	                    	this.recoveryTime = random.nextInt((int)(5000+ 600*p2.infectedBy.complexity) );
+	                    	numInfected++; // Add to total count of infected people
+	                    	
+	                    }
+	                    else {
+	                    	this.status = 0;
+	                    }
 	                }
 	            }
 	        } else if (this.status == 1 && p2.status == 2) { // Case person 1 is infected and person 2 is cured
@@ -140,14 +188,31 @@ public class Person {
 	                		
 	                	}
 	                	
-		                    p2.status = 1;
-		                    p2.infectedBy = current; // Infect person with the same virus
-		                    numInfected++; // Add to total count of infected people
+	                    p2.status = 1;
+                  
+		                if (current != null)
+		                {
+		                p2.infectedBy = current; // Infect person with the same virus
+		                p2. recoveryTime =  random.nextInt((int) (5000+ 600*current.complexity)); // 
+		                numInfected++; // Add to total count of infected people
+		                }
+	                    else if (this.infectedBy != null)
+	                    {
+	                    	p2.infectedBy = this.infectedBy;
+	                    	p2.recoveryTime =  random.nextInt((int) (5000+ 600*this.infectedBy.complexity));
+	                    	numInfected++; // Add to total count of infected people
+	                    	
+	                    }
+	                    else
+	                    {
+	                    	p2.status = 0;
+	                    }
+	                }
 	                }
 	            }
 	        }    
 	    }
-	}
+
 
 
 
