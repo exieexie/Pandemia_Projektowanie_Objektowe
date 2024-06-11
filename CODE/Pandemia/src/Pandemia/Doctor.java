@@ -10,8 +10,8 @@ public class Doctor extends Person {
     
     public Doctor(int virusId) {
     	Random random = new Random();
-		//randomize the position of the Person object to be within the 800x600 frame!
-		x = (int)(Math.random()*990+0);
+		//randomize the position of the Person object to be within the 1000x600 frame!
+		x = (int)(Math.random()*590+0);
 		y = (int)(Math.random()*590+0);
 		vx  = (int)(Math.random()*(10+1)+-5);
 		vy  = (int)(Math.random()*(10+1)+-5);
@@ -54,16 +54,16 @@ public class Doctor extends Person {
 		y += vy;
 		
 		//code to have the Person objects bounce off the borders
-		if(x < 0 || x >= 990) {
+		if(x < 0 || x >= 680) {
 			vx *= -1;
 		}
 		
 		//bounce off the top and bottom
-		if(y < 0 || y >= 590) {
+		if(y < 0 || y >= 540) {
 			vy *= -1;
 		}
 		
 		//draw the oval representign the Person object
-		g.fillOval(x, y, 10, 10);
+		g.fillOval(x, y, 20, 20);
     }
 }
