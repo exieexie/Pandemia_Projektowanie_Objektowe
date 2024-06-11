@@ -1,6 +1,8 @@
 package Pandemia;
 
 import java.awt.Color;
+
+
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ public class Person {
 	public Person() {
 		Random random = new Random();
 		//randomize the position of the Person object to be within the 800x600 frame!
-		x = (int)(Math.random()*990+0);
+		x = (int)(Math.random()*590+0);
 		y = (int)(Math.random()*590+0);
 		
 		
@@ -271,12 +273,12 @@ public class Person {
 		y += vy;
 		
 		//code to have the Person objects bounce off the borders
-		if(x < 0 || x >= 990) {
+		if(x < 0 || x >= 680) {
 			vx *= -1;
 		}
 		
 		//bounce off the top and bottom
-		if(y < 0 || y >= 590) {
+		if(y < 0 || y >= 540) {
 			vy *= -1;
 		}
 		
