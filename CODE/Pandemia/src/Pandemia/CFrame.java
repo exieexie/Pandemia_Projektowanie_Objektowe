@@ -1,13 +1,22 @@
 package Pandemia;
 
 import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
+import javax.swing.JColorChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+
 
 public class CFrame extends JPanel implements ActionListener {
 
@@ -15,14 +24,16 @@ public class CFrame extends JPanel implements ActionListener {
 
     private int time = 0; // Track time as the simulation runs
     private int population;
-
     public Color healthyColor, recoveredColor, deadColor;
+    JMenu SubMenu, Menu;
+    JMenuBar menuBar;
+    public Timer t;
     
     public CFrame(int population) {
     	
-    	 setPreferredSize(new Dimension(1000, 600));
+    	 setPreferredSize(new Dimension(710, 610));
         this.population = population; // Set the population size
-
+      
         // Setup the Person objects in the list
         for (int i = 0; i < population; i++) {
             // Instantiate an Person object and add it to the ArrayList
@@ -31,8 +42,9 @@ public class CFrame extends JPanel implements ActionListener {
         }
 
         // Timer for animation
-        Timer t = new Timer(16, this); // 16 is the period in ms, so the timer code runs every 16ms.
+        t = new Timer(16, this); // 16 is the period in ms, so the timer code runs every 16ms.
         t.start(); // Start the timer
+        
     }
 
     // Override the paintComponent method to draw the simulation
@@ -70,6 +82,7 @@ public class CFrame extends JPanel implements ActionListener {
         }
     }
 
+    
     // Getters and setters
     public int getPopulation() {
         return population;
